@@ -1,19 +1,24 @@
 # Uncomment the required imports before adding the code
+import json
 
-# from django.shortcuts import render
-# from django.http import HttpResponseRedirect, HttpResponse
-# from django.contrib.auth.models import User
-# from django.shortcuts import get_object_or_404, render, redirect
-# from django.contrib.auth import logout
-# from django.contrib import messages
-# from datetime import datetime
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render
+from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404, render, redirect
+from django.contrib.auth import logout
+from django.contrib import messages
+from datetime import datetime
 
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
-# from .populate import initiate
+from .populate import initiate
 
 
 # Get an instance of a logger
@@ -39,13 +44,68 @@ def login_user(request):
     return JsonResponse(data)
 
 # Create a `logout_request` view to handle sign out request
-# def logout_request(request):
-# ...
+# Create a `logout_request` view to handle sign out request
+def logout_request(request):
+    logout(request)
+    data = {"userName": ""}
+    return JsonResponse(data)
 
 # Create a `registration` view to handle sign up request
-# @csrf_exempt
-# def registration(request):
-# ...
+@csrf_exempt
+def registration(request):
+    if request.method != "POST":
+        return JsonResponse(
+            {"error": "Only POST requests are allowed"},
+            status=405
+        )
+
+    try:
+        data = json.loads(request.body)
+
+        username = data.get("userName")
+        password = data.get("password")
+        first_name = data.get("firstName", "")
+        last_name = data.get("lastName", "")
+
+        if not username or not password:
+            return JsonResponse(
+                {"error": "Username and password are required"},
+                status=400
+            )
+
+        if User.objects.filter(username=username).exists():
+            return JsonResponse(
+                {
+                    "userName": username,
+                    "error": "Already Registered"
+                },
+                status=400
+            )
+
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            first_name=first_name,
+            last_name=last_name
+        )
+
+        # Log in the newly registered user
+        login(request, user)
+
+        return JsonResponse({
+            "userName": user.username
+        })
+
+    except json.JSONDecodeError:
+        return JsonResponse(
+            {"error": "Invalid JSON data"},
+            status=400
+        )
+    except Exception as error:
+        return JsonResponse(
+            {"error": str(error)},
+            status=500
+        )
 
 # # Update the `get_dealerships` view to render the index page with
 # a list of dealerships

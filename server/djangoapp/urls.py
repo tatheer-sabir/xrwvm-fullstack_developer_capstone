@@ -7,8 +7,9 @@ from .views import registration
 
 app_name = 'djangoapp'
 urlpatterns = [
-        path("register", registration, name="register"),
+    path("register", registration, name="register"),
+    path(route='get_cars', view=views.get_cars, name ='getcars'),
 
     path(route='login', view=views.login_user, name='login'),
-        path(route='logout', view=views.logout_request, name='logout'),
+    path(route='logout', view=views.logout_request, name='logout'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

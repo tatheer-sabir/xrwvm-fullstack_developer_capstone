@@ -1,6 +1,7 @@
 # Uncomment the required imports before adding the code
 import json
-
+from django.http import JsonResponse
+from .restapis import get_request, analyze_review_sentiments
 from .models import CarMake, CarModel
 from .populate import initiate
 from django.contrib.auth import authenticate, login, logout
@@ -125,7 +126,42 @@ def get_cars(request):
 # a list of dealerships
 # def get_dealerships(request):
 # ...
+#Update the `get_dealerships` render list of dealerships all by default, particular state if state is passed
+def get_dealerships(request, state="All"):
+    if(state == "All"):
+        endpoint = "/fetchDealers"
+    else:
+        endpoint = "/fetchDealers/"+state
+    dealerships = get_request(endpoint)
+    return JsonResponse({"status":200,"dealers":dealerships})
 
+
+def get_dealer_details(request, dealer_id):
+    if dealer_id:
+        endpoint = "/fetchDealer/" + str(dealer_id)
+        dealership = get_request(endpoint)
+        return JsonResponse({"status": 200, "dealer": dealership})
+    else:
+        return JsonResponse({"status": 400, "message": "Bad Request"})
+
+def get_dealer_reviews(request, dealer_id):
+    if dealer_id:
+        endpoint = "/fetchReviews/dealer/" + str(dealer_id)
+        reviews = get_request(endpoint)
+        
+        # Iterate over each review, analyze sentiment, and assign it back to the dict
+        if reviews:
+            for review in reviews:
+                # Calls sentiment analysis microservice passing the review text
+                sentiment_result = analyze_review_sentiments(review.get('review'))
+                if isinstance(sentiment_result, dict):
+                    review['sentiment'] = sentiment_result.get('sentiment', 'neutral')
+                else:
+                    review['sentiment'] = sentiment_result
+                    
+        return JsonResponse({"status": 200, "reviews": reviews})
+    else:
+        return JsonResponse({"status": 400, "message": "Bad Request"})
 # Create a `get_dealer_reviews` view to render the reviews of a dealer
 # def get_dealer_reviews(request,dealer_id):
 # ...
@@ -137,3 +173,22 @@ def get_cars(request):
 # Create a `add_review` view to submit a review
 # def add_review(request):
 # ...
+import json
+from django.http import JsonResponse
+from .restapis import get_request, analyze_review_sentiments, post_review
+
+def add_review(request):
+    """
+    Handle POST request to add a new dealer review.
+    Requires the user to be authenticated.
+    """
+    if not request.user.is_anonymous:
+        try:
+            data = json.loads(request.body)
+            response = post_review(data)
+            return JsonResponse({"status": 200, "message": "Review added successfully"})
+        except Exception as e:
+            print(f"Error processing review: {e}")
+            return JsonResponse({"status": 401, "message": "Error in posting review"})
+    else:
+        return JsonResponse({"status": 403, "message": "Unauthorized"})

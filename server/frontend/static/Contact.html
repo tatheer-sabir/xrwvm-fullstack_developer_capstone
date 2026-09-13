@@ -1,0 +1,88 @@
+<html>
+<head>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script>
+
+const logout = async (e) => {
+//Include the code for logout here.
+};
+
+let checkSession = ()=>{
+  let curr_user = sessionStorage.getItem("username");
+
+  if (curr_user && curr_user !== "") {
+    document.getElementById("loginlogout").innerHTML = 
+    '<span class="homepage_links">' + curr_user +'</span>' +
+    '<a class="homepage_links" onclick="logout()" href="/">Logout</a>'
+  } else {
+    document.getElementById("loginlogout").innerHTML = 
+    '<a class="homepage_links" href="/login">Login</a>'+
+    '<a class="homepage_links"  href="/register">Register</a>'
+  }
+ }
+</script>
+</head>
+<body onload="checkSession()">
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color:darkturquoise; height: 1in;">
+  <div class="container-fluid">
+    <h2 style="padding-right: 5%;">Dealerships</h2>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" style="font-size: larger;" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="font-size: larger;" href="/about">About Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" style="font-size: larger;" aria-current="page" href="#">Contact Us</a>
+        </li>
+      </ul>
+      <span class="navbar-text">
+        <div class="loginlink" id="loginlogout">
+        </div>
+        </span>
+    </div>
+  </div>
+</nav>
+
+<div class="contact-wrapper">
+  <div class="contact-card">
+    <h2 class="contact-title">Get in Touch</h2>
+    <p class="contact-subtitle">We'd love to hear from you. Reach out with any questions about our vehicles or services.</p>
+
+    <div class="contact-info-row">
+      <div class="contact-info-item">
+        <div class="contact-icon">📍</div>
+        <h5>Address</h5>
+        <p>482 Maple Ridge Drive, Austin, TX 78701</p>
+      </div>
+
+      <div class="contact-info-item">
+        <div class="contact-icon">📞</div>
+        <h5>Phone</h5>
+        <p>(512) 555-0192</p>
+      </div>
+
+      <div class="contact-info-item">
+        <div class="contact-icon">✉️</div>
+        <h5>Email</h5>
+        <p>support@bestchoicemotors.com</p>
+      </div>
+    </div>
+
+    <table class="contact-hours">
+      <tr><td><strong>Monday - Friday</strong></td><td>9:00 AM - 7:00 PM</td></tr>
+      <tr><td><strong>Saturday</strong></td><td>10:00 AM - 5:00 PM</td></tr>
+      <tr><td><strong>Sunday</strong></td><td>Closed</td></tr>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

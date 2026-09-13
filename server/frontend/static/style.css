@@ -75,6 +75,63 @@ img{
   background-color: black;
 }
 
+.contact-wrapper{
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.contact-card{
+  background-color: white;
+  border: rgb(103, 102, 105) 3px solid;
+  border-radius: 10px;
+  padding: 40px;
+  width: 60%;
+  min-width: 350px;
+  box-shadow: 2px 2px 2px 3px #999;
+}
+
+.contact-title{
+  text-align: center;
+  color: rgb(97, 64, 128);
+}
+
+.contact-subtitle{
+  text-align: center;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.contact-info-row{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.contact-info-item{
+  text-align: center;
+  padding: 10px;
+}
+
+.contact-icon{
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.contact-hours{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.contact-hours td{
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
 .navitems{
   display: flex;
   flex-direction: row;
